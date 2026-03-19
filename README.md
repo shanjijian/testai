@@ -1,7 +1,6 @@
-# TestAI - 基于 DeepAgents 的企业级 Agent 示例框架
+# TestAI - 基于 DeepAgents 的 Agent 框架开发示例
 
-> [!NOTE]
-> **TestAI** 是一个展示如何使用 [**DeepAgents**](https://github.com/langchain-ai/deepagents) 框架快速构建企业级、多代理协作、带代码执行沙箱且具备生产级持久化能力的智能代理平台的**示例参考项目**。
+> **TestAI** 是一个展示如何使用 [**DeepAgents**](https://github.com/langchain-ai/deepagents) 框架构建多代理协作、带代码执行沙箱且具备异步持久化能力的智能代理平台的**参考示例**。
 
 本项目不仅仅是一个可以直接运行的代码库，更是一份使用 DeepAgents 架构最佳实践的工程指南。它演示了如何高效组织 Agent 核心逻辑、基础设施层以及工具链。
 
