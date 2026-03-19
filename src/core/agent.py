@@ -81,12 +81,56 @@ class MainAgent:
 
 
     async def async_run(self, user_input: str, user_id: str = "default_user", thread_id: str = "default_thread", callbacks: Optional[list] = None):
-        # 确保数据库表已创建
+        """执行 Agent 并返回最终回复字符串。"""
+        # 确保基础设施就绪
         await self.checkpointer.setup()
         await self.store.setup()
         
-        # langfuse
-        final_callbacks = []
+        final_callbacks = self._get_callbacks(callbacks)
+        
+        logger.info(f"🚦 [MainAgent] Starting to process user input (User: {user_id}, Thread: {thread_id}): {user_input[:100]}...")
+        
+        config = {
+            "configurable": {"thread_id": thread_id, "user_id": user_id},
+            "callbacks": final_callbacks
+        }
+        
+        result = await self.agent.ainvoke(
+            {"messages": [{"role": "user", "content": user_input}]},
+            config=config
+        )
+        return result["messages"][-1].content
+
+    async def async_stream(self, user_input: str, user_id: str = "default_user", thread_id: str = "default_thread", callbacks: Optional[list] = None):
+        """流式执行 Agent，生成 Token 序列。"""
+        # 确保基础设施就绪
+        await self.checkpointer.setup()
+        await self.store.setup()
+        
+        final_callbacks = self._get_callbacks(callbacks)
+        
+        logger.info(f"🌊 [MainAgent] Starting streaming process (User: {user_id}, Thread: {thread_id})...")
+        
+        config = {
+            "configurable": {"thread_id": thread_id, "user_id": user_id},
+            "callbacks": final_callbacks
+        }
+        
+        async for event in self.agent.astream_events(
+            {"messages": [{"role": "user", "content": user_input}]},
+            config=config,
+            version="v2"
+        ):
+            kind = event["event"]
+            # 捕获聊天模型输出的 Token 块
+            if kind == "on_chat_model_stream":
+                content = event["data"]["chunk"].content
+                if content:
+                    yield content
+
+    def _get_callbacks(self, extra_callbacks: Optional[list] = None) -> list:
+        """获取合并后的回调处理器列表。"""
+        callbacks = []
         if self.settings.langfuse.public_key and self.settings.langfuse.secret_key:
             langfuse_client = Langfuse(
                 public_key=self.settings.langfuse.public_key,
@@ -95,32 +139,8 @@ class MainAgent:
             )
             handler = CallbackHandler(public_key=self.settings.langfuse.public_key)
             handler.client = langfuse_client
-            final_callbacks.append(handler)
+            callbacks.append(handler)
         
-        if callbacks:
-            final_callbacks.extend(callbacks)
-        
-        # deepagents async run
-        logger.info(f"🚦 [MainAgent] Starting to process user input (User: {user_id}, Thread: {thread_id}): {user_input[:100]}...")
-        
-        config = {
-            "configurable": {
-                "thread_id": thread_id,
-                "user_id": user_id
-            },
-            "callbacks": final_callbacks
-        }
-        
-        result = await self.agent.ainvoke(
-            {
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": user_input
-                    }
-                ]
-            },
-            config=config
-        )
-        result = result["messages"][-1].content
-        return result
+        if extra_callbacks:
+            callbacks.extend(extra_callbacks)
+        return callbacks

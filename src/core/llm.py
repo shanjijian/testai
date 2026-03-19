@@ -9,4 +9,5 @@ def custom_llm(settings: Settings):
         base_url=settings.llm.base_url,
         temperature=settings.llm.temperature,
         timeout=settings.llm.timeout,
+        streaming=True,
     )
