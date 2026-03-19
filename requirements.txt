@@ -1,0 +1,26 @@
+# Core Framework
+deepagents
+langchain-openai
+pydantic>=2.0.0
+pydantic-settings
+
+# Infrastructure & Persistence
+psycopg[binary]>=3.1.8
+psycopg-pool
+opensandbox
+opensandbox-code-interpreter
+
+# Monitoring & Logging
+loguru
+langfuse
+
+# Tools & Services
+tavily-python
+jdcloud-sdk
+cos-python-sdk-v5
+webserp
+curl-cffi
+PyYAML
+
+# Utils
+python-dotenv

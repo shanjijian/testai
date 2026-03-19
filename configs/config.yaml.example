@@ -1,0 +1,25 @@
+# TestAI 应用程序配置模板 (YAML)
+# =================================================================
+
+# 代理基础配置
+llm:
+  model: "gpt-4-turbo"
+  temperature: 0.7
+  timeout: 300
+
+# 存储与区域配置
+storage:
+  region: "ap-beijing"
+  # bucket: "your-bucket-name" # 也可以在 .env 中设置
+
+# 数据库配置 (Host 端地址)
+database:
+  url: "postgresql://postgres:postgres@127.0.0.1:5433/testai_agent"
+
+# 代码执行沙箱配置
+sandbox:
+  url: "http://127.0.0.1:8090"
+
+# 技能加载路径
+skills:
+  main_dir: "skills"

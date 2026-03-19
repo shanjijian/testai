@@ -1,0 +1,19 @@
+# Standalone PostgreSQL Docker Compose
+# 用于单独部署 TestAI 的数据库服务
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: testai-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: testai_agent
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

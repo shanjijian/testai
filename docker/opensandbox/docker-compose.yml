@@ -1,0 +1,70 @@
+# OpenSandbox Server Docker Compose
+# 用于本地部署 OpenSandbox 沙箱服务
+#
+# 使用方式：
+#   cd docker/opensandbox
+#   docker compose up -d
+#
+# 健康检查：
+#   curl http://localhost:8090/health
+#
+# 注意事项：
+#   - 需要 Docker Engine 20.10+
+#   - 请修改 api_key 为你自己的密钥
+#   - macOS 可直接使用 host.docker.internal，Linux 需替换为宿主机实际 IP
+
+configs:
+  opensandbox-config:
+    content: |
+      [server]
+      host = "0.0.0.0"
+      port = 8090
+      log_level = "INFO"
+      api_key = "your-secret-api-key-change-this"  # CHANGEME
+      max_sandbox_timeout_seconds = 86400
+
+      [runtime]
+      type = "docker"
+      execd_image = "opensandbox/execd:v1.0.7"
+
+      [egress]
+      image = "opensandbox/egress:v1.0.3"
+
+      [docker]
+      network_mode = "bridge"
+      # macOS 可直接使用 host.docker.internal
+      # Linux 请替换为宿主机实际 IP（如 192.168.x.x）
+      host_ip = "host.docker.internal"
+      drop_capabilities = ["AUDIT_WRITE", "MKNOD", "NET_ADMIN", "NET_RAW", "SYS_ADMIN", "SYS_MODULE", "SYS_PTRACE", "SYS_TIME", "SYS_TTY_CONFIG"]
+      no_new_privileges = true
+      pids_limit = 512
+
+      [ingress]
+      mode = "direct"
+
+services:
+  opensandbox-server:
+    image: opensandbox/server:latest
+    container_name: opensandbox-server
+    restart: unless-stopped
+    networks:
+      - opensandbox-net
+    ports:
+      - "8090:8090"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    configs:
+      - source: opensandbox-config
+        target: /etc/opensandbox/config.toml
+    environment:
+      - SANDBOX_CONFIG_PATH=/etc/opensandbox/config.toml
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+networks:
+  opensandbox-net:
+    driver: bridge
