@@ -80,13 +80,13 @@ class MainAgent:
         )
 
 
-    async def async_run(self, user_input: str, user_id: str = "default_user", thread_id: str = "default_thread"):
+    async def async_run(self, user_input: str, user_id: str = "default_user", thread_id: str = "default_thread", callbacks: Optional[list] = None):
         # 确保数据库表已创建
         await self.checkpointer.setup()
         await self.store.setup()
         
         # langfuse
-        callbacks = []
+        final_callbacks = []
         if self.settings.langfuse.public_key and self.settings.langfuse.secret_key:
             langfuse_client = Langfuse(
                 public_key=self.settings.langfuse.public_key,
@@ -95,7 +95,10 @@ class MainAgent:
             )
             handler = CallbackHandler(public_key=self.settings.langfuse.public_key)
             handler.client = langfuse_client
-            callbacks.append(handler)
+            final_callbacks.append(handler)
+        
+        if callbacks:
+            final_callbacks.extend(callbacks)
         
         # deepagents async run
         logger.info(f"🚦 [MainAgent] Starting to process user input (User: {user_id}, Thread: {thread_id}): {user_input[:100]}...")
@@ -105,7 +108,7 @@ class MainAgent:
                 "thread_id": thread_id,
                 "user_id": user_id
             },
-            "callbacks": callbacks
+            "callbacks": final_callbacks
         }
         
         result = await self.agent.ainvoke(
