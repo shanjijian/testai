@@ -7,7 +7,6 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/shanjijian/testai)
 ![GitHub license](https://img.shields.io/github/license/shanjijian/testai)
 
-![TestAI Banner](./banner.png)
 
 **TestAI 是一个高性能、可扩展且用户友好的 AI Agent 框架，专为处理复杂任务自动化而设计。** 它基于 **DeepAgents** 生态，支持**多智能体协作**、**安全代码执行**以及**全流式实时交互**，是一个功能强大的 **AI 部署解决方案**。
 

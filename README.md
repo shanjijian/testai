@@ -7,7 +7,6 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/shanjijian/testai)
 ![GitHub license](https://img.shields.io/github/license/shanjijian/testai)
 
-![TestAI Banner](./banner.png)
 
 **TestAI is a powerful, extensible, and user-friendly AI agent framework designed for complex task automation.** It leverages the **DeepAgents** ecosystem to provide **multi-agent coordination**, **secure code execution**, and **real-time streaming interactions**, making it an **advanced AI deployment solution**.
 
