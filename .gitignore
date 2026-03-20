@@ -145,3 +145,5 @@ logs/
 brain/
 configs/config.yaml
 !configs/config.yaml.example
+.chainlit/
+chainlit.md

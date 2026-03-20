@@ -70,6 +70,7 @@ class Settings(BaseSettings):
     skills: SkillSettings = Field(default_factory=SkillSettings)
     langfuse: LangfuseSettings = Field(default_factory=LangfuseSettings)
     jdcloud: JDCloudSettings = Field(default_factory=JDCloudSettings)
+    recursion_limit: int = Field(default=100, validation_alias=AliasChoices("recursion_limit", "RECURSION_LIMIT"))
 
     @model_validator(mode="before")
     @classmethod

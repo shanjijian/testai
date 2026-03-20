@@ -92,7 +92,8 @@ class MainAgent:
         
         config = {
             "configurable": {"thread_id": thread_id, "user_id": user_id},
-            "callbacks": final_callbacks
+            "callbacks": final_callbacks,
+            "recursion_limit": self.settings.recursion_limit,
         }
         
         result = await self.agent.ainvoke(
@@ -113,7 +114,8 @@ class MainAgent:
         
         config = {
             "configurable": {"thread_id": thread_id, "user_id": user_id},
-            "callbacks": final_callbacks
+            "callbacks": final_callbacks,
+            "recursion_limit": self.settings.recursion_limit,
         }
         
         async for event in self.agent.astream_events(
