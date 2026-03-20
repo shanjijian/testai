@@ -46,21 +46,27 @@ cp configs/config.yaml.example configs/config.yaml
 docker-compose -f docker/docker-compose.yaml up -d
 ```
 
-### 4. 开启 Web 界面
+### 4. 启动 Web 界面 (二选一)
+
+#### 选项 A: 使用原生 Chainlit UI (简单快速)
 ```bash
 chainlit run src/ui/chainlit_app.py
 ```
 
-### 5. 接入 Open WebUI (OpenAI API)
-TestAI 提供标准 OpenAI 兼容接口，可无缝接入 Open WebUI：
-```bash
-export PYTHONPATH=$PYTHONPATH:.
-python src/ui/api_server.py
-```
-在 Open WebUI 中配置：
-- **API Base URL**: `http://localhost:8000/v1`
-- **API Key**: `testai`
-- **Model**: `testai-agent`
+#### 选项 B: 使用 Open WebUI (功能丰富)
+1. **启动 Open WebUI 容器**:
+   ```bash
+   docker-compose -f docker/open-webui/docker-compose.yaml up -d
+   ```
+2. **启动 TestAI API 服务**:
+   ```bash
+   export PYTHONPATH=$PYTHONPATH:.
+   python src/api/main.py
+   ```
+3. **访问界面**: 打开 [http://localhost:3000](http://localhost:3000)
+   - **API Base URL**: `http://host.docker.internal:8000/v1` (macOS/Windows) 或 `http://<宿主机IP>:8000/v1` (Linux)
+   - **API Key**: `testai`
+   - **Model**: `testai-agent`
 
 ---
 
