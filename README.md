@@ -51,6 +51,17 @@ docker-compose -f docker/docker-compose.yaml up -d
 chainlit run src/ui/chainlit_app.py
 ```
 
+### 5. Connect to Open WebUI (OpenAI API)
+TestAI provides an OpenAI-compatible API for seamless integration:
+```bash
+export PYTHONPATH=$PYTHONPATH:.
+python src/ui/api_server.py
+```
+In Open WebUI settings:
+- **API Base URL**: `http://localhost:8000/v1`
+- **API Key**: `testai`
+- **Model**: `testai-agent`
+
 ---
 
 ## 🤝 Contributing & Support

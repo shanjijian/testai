@@ -25,3 +25,6 @@ PyYAML
 # Utils
 python-dotenv
 chainlit
+fastapi
+uvicorn
+sse-starlette

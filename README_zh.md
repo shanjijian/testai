@@ -51,6 +51,17 @@ docker-compose -f docker/docker-compose.yaml up -d
 chainlit run src/ui/chainlit_app.py
 ```
 
+### 5. 接入 Open WebUI (OpenAI API)
+TestAI 提供标准 OpenAI 兼容接口，可无缝接入 Open WebUI：
+```bash
+export PYTHONPATH=$PYTHONPATH:.
+python src/ui/api_server.py
+```
+在 Open WebUI 中配置：
+- **API Base URL**: `http://localhost:8000/v1`
+- **API Key**: `testai`
+- **Model**: `testai-agent`
+
 ---
 
 ## 🤝 贡献与支持
