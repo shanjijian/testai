@@ -20,8 +20,8 @@ class StorageSettings(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
     cos_secret_id: Optional[str] = Field(default=None, validation_alias=AliasChoices("cos_secret_id", "COS_SECRET_ID"))
     cos_secret_key: Optional[str] = Field(default=None, validation_alias=AliasChoices("cos_secret_key", "COS_SECRET_KEY"))
-    region: str = Field(default="ap-beijing", validation_alias=AliasChoices("cos_region", "COS_REGION"))
-    bucket: Optional[str] = Field(default=None, validation_alias=AliasChoices("cos_bucket", "COS_BUCKET"))
+    cos_region: str = Field(default="ap-beijing", validation_alias=AliasChoices("cos_region", "COS_REGION", "region"))
+    cos_bucket: Optional[str] = Field(default=None, validation_alias=AliasChoices("cos_bucket", "COS_BUCKET", "bucket"))
 
 class DatabaseSettings(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
