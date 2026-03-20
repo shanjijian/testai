@@ -16,13 +16,13 @@ async def upload_to_cos(
     """上传文件或内容到腾讯云 COS 并返回下载链接。"""
     settings = get_settings()
     
-    if not all([settings.storage.cos_secret_id, settings.storage.cos_secret_key, settings.storage.cos_bucket]):
+    if not all([settings.storage.secret_id, settings.storage.secret_key, settings.storage.bucket]):
         raise ValueError("Tencent COS credentials (secret_id, secret_key, bucket) are not configured.")
         
     config = CosConfig(
-        Region=settings.storage.cos_region,
-        SecretId=settings.storage.cos_secret_id,
-        SecretKey=settings.storage.cos_secret_key,
+        Region=settings.storage.region,
+        SecretId=settings.storage.secret_id,
+        SecretKey=settings.storage.secret_key,
         Scheme="https"
     )
     client = CosS3Client(config)
@@ -36,14 +36,14 @@ async def upload_to_cos(
     # 1. 优先使用提供的内存内容
     if content is not None:
         client.put_object(
-            Bucket=settings.storage.cos_bucket,
+            Bucket=settings.storage.bucket,
             Body=content,
             Key=cos_path
         )
     # 2. 尝试从本地（宿主机）读取
     elif file_path and os.path.exists(file_path):
         client.upload_file(
-            Bucket=settings.storage.cos_bucket,
+            Bucket=settings.storage.bucket,
             LocalFilePath=file_path,
             Key=cos_path
         )
@@ -56,7 +56,7 @@ async def upload_to_cos(
             body = res.content if hasattr(res, 'content') else res
             
             client.put_object(
-                Bucket=settings.storage.cos_bucket,
+                Bucket=settings.storage.bucket,
                 Body=body,
                 Key=cos_path
             )
@@ -67,7 +67,7 @@ async def upload_to_cos(
     
     # 生成带签名的下载链接
     download_url = client.get_presigned_url(
-        Bucket=settings.storage.cos_bucket,
+        Bucket=settings.storage.bucket,
         Key=cos_path,
         Method="GET",
         Expired=expire_seconds
